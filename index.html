@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shopping in London – Reading Game</title>
+<style>
+:root{color-scheme:light;--roof:#c8102e;--wall:#8fb0ee;--teal:#1d3f9c;--ink:#14213d;--soft:#f1f5ff;--line:#cbd8f3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:#fff;color:var(--ink);font-family:Georgia,'Times New Roman',serif}
+button,input{font-family:inherit}
+#app{display:flex;height:100%}
+#read{flex:0 0 75%;display:flex;flex-direction:column;border-right:3px solid var(--line);min-width:0}
+#title{text-align:center;margin:0;padding:12px 34px;border-bottom:2px solid var(--line);color:var(--roof);font-size:20px;letter-spacing:.04em}
+#nav{display:flex;gap:8px;align-items:center;padding:10px 18px;border-bottom:2px solid var(--line);background:#fff}
+#nav .logo{display:flex;align-items:center;gap:6px;font-weight:bold;color:var(--roof);margin-right:auto}
+#nav button{border:2px solid var(--teal);background:#fff;color:var(--teal);border-radius:999px;padding:5px 14px;font-size:14px;cursor:pointer}
+#nav button:hover,#nav button.on{background:var(--teal);color:#fff}
+#text{flex:1;overflow-y:auto;padding:22px 34px 80px;line-height:1.45;font-size:18px;scroll-behavior:smooth}
+#text h2{color:var(--roof);letter-spacing:.04em;margin:.2em 0 .5em}
+#text h3{color:var(--teal);margin:.9em 0 .15em;border-bottom:2px dashed var(--line);padding-bottom:4px}
+#text p{margin:.3em 0}
+mark.ev{background:#ffe27a;padding:2px 3px;border-radius:4px;box-shadow:0 0 0 2px #f4c430}
+#side{flex:0 0 25%;display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;background:#fff;min-width:0}
+.roof{height:0;border-left:50% solid transparent}
+.card{background:var(--soft);border:3px solid var(--wall);border-radius:14px;padding:14px}
+.dots{display:flex;gap:5px;flex-wrap:wrap}
+.dots i{width:14px;height:14px;border-radius:4px 4px 2px 2px;background:#eadfd2;display:block}
+.dots i.cur{outline:2px solid var(--teal)}.dots i.ok{background:var(--teal)}.dots i.no{background:var(--roof)}
+.q{font-size:17px;line-height:1.5}
+.part{font-size:14px;line-height:1.5}.part b{color:var(--teal)}.num{color:var(--roof);font-size:20px}
+#text p.c{font-size:1.17em}
+.hint{font-size:13px;color:#7a6a58;margin-top:6px}
+input[type=text]{width:100%;padding:10px;border:2px solid var(--wall);border-radius:10px;font-size:17px;background:#fff}
+input[type=text]:disabled{background:#f7f2ec}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-size:15px;cursor:pointer;color:#fff;background:var(--teal);width:100%}
+.btn.alt{background:var(--wall);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.fb{border-radius:10px;padding:10px;font-size:15px;line-height:1.5}
+.fb.ok{background:#e3ecff;border:2px solid var(--teal)}.fb.no{background:#fde6ea;border:2px solid var(--roof)}
+.note{font-size:13px;color:#5a4a3a;margin-top:6px}
+.row{display:flex;gap:8px}
+h1.t{font-size:20px;margin:0;color:var(--roof)}
+ol.rev{padding-left:20px;font-size:14px;line-height:1.6}
+@media(max-width:760px){#app{flex-direction:column}#read{flex:1 1 55%;border-right:0;border-bottom:3px solid var(--line)}#side{flex:1 1 45%}#text{padding:14px 16px 60px;font-size:16px}}
+.tbox{display:flex;gap:8px;align-items:center;padding:8px 10px}.tbox span{font-weight:bold;min-width:56px}.tbox .btn{width:auto;flex:1;padding:8px}
+input[type=text],input[type=text]:disabled{color:#000;-webkit-text-fill-color:#000;opacity:1;font-weight:bold}
+html,body,button,input,#text,#text *,#side,#side *{font-size:16px!important}
+#title{font-size:20px!important}
+.sum{position:relative;max-height:42vh;overflow-y:auto}.sum p{margin:.5em 0;line-height:1.6}.blank{background:#ffe27a;border-radius:4px;padding:0 3px}.fill{border-bottom:2px solid;padding:0 2px}.fill.ok{color:#1d3f9c}.fill.no{color:#c8102e}
+</style>
+</head>
+<body>
+<div id="app">
+ <section id="read">
+  <h1 id="title">🛍️ SHOPPING IN LONDON! 🛍️</h1>
+  <div id="text"></div>
+ </section>
+ <aside id="side"></aside>
+</div>
+<script>
+var R=[
+{id:"art",t:"p",x:"What do you say?"},
+{id:"art",t:"p",x:"We asked our London Life readers about their favourite places to go shopping in London. Here are some of their answers!"},
+{id:"melissa",t:"h3",x:"1. Melissa – Oxford Street"},
+{id:"melissa",t:"p",x:"My all-time favourite place for shopping in London is Oxford Street. It’s got more than 300 shops, including the most typical high street brands. There are also some huge department stores, too."},
+{id:"melissa",t:"p",x:"They sell everything from clothes and shoes to electronics and books, and the prices are quite good. The only problem with Oxford Street is that it’s always really busy. About 500,000 people go there every day!"},
+{id:"kyle",t:"h3",x:"2. Kyle – Camden"},
+{id:"kyle",t:"p",x:"If you’re into alternative fashion, then Camden is one of the best places to go in London. It’s a historic neighbourhood near Regent’s Park and not far from King’s Cross Station."},
+{id:"kyle",t:"p",x:"Camden is famous for its open-air markets, which have many shops and stalls. There are lots of second-hand clothes for sale and some shops also specialise in punk, goth or retro fashion."},
+{id:"paula",t:"h3",x:"3. Paula – Carnaby Street"},
+{id:"paula",t:"p",x:"I love shopping with friends in Carnaby Street, near Oxford Circus. It’s a pedestrian area, so there aren’t any cars. Carnaby Street became famous for its trendy shops selling new, modern fashion in the 1960s, but now you can find all types of clothes and accessories there."},
+{id:"paula",t:"p",x:"If you get hungry, there are also lots of cafés and restaurants. While you’re in the area, you can also visit Hamleys on Regent Street. It’s the largest and oldest toy shop in the world. The first Hamleys shop opened more than 250 years ago!"},
+{id:"jon",t:"h3",x:"4. Jon – Westfield, White City"},
+{id:"jon",t:"p",x:"When the weather is awful, I prefer to shop indoors where it’s warm and dry. My favourite place to go is Westfield, in White City."},
+{id:"jon",t:"p",x:"It’s the largest shopping centre in London, with 150,000 m² of shops. That’s about the size of 30 football pitches!"},
+{id:"jon",t:"p",x:"There are also four food halls with more than 80 different places to eat, including fast food and international restaurants. After you finish shopping you can also see a film at the 14-screen cinema. Don’t forget to buy popcorn!"}
+];
+var SUMT="Shopping in London";
+var SUMP=["London offers a variety of shopping destinations. Oxford Street is a popular shopping destination, with more than {1} shops. Customers can buy clothes, shoes, electronics and {2}. However, the street is often very {3} because thousands of people visit it every day.",
+"Camden is well known for its alternative fashion and {4} markets. Shoppers can find second-hand clothes and stores specialising in punk, goth and {5} fashion.",
+"Carnaby Street is a {6} area near Oxford Circus, famous for its trendy fashion shops since the {7}. Visitors can also explore Hamleys, one of the world's oldest toy shops.",
+"For indoor shopping, Westfield in {8} is an excellent choice. It covers an area of 150,000 square metres and has four {9} offering various dining options. Visitors can also enjoy watching films at its {10} cinema."];
+var Q=[
+{s:"melissa",a:"300",ev:["It’s got more than 300 shops, including the most typical high street brands."]},
+{s:"melissa",a:"books",ev:["They sell everything from clothes and shoes to electronics and books, and the prices are quite good."]},
+{s:"melissa",a:"busy",ev:["The only problem with Oxford Street is that it’s always really busy."]},
+{s:"kyle",a:"open-air",ev:["Camden is famous for its open-air markets, which have many shops and stalls."]},
+{s:"kyle",a:"retro",ev:["There are lots of second-hand clothes for sale and some shops also specialise in punk, goth or retro fashion."]},
+{s:"paula",a:"pedestrian",ev:["It’s a pedestrian area, so there aren’t any cars."]},
+{s:"paula",a:"1960s",ev:["Carnaby Street became famous for its trendy shops selling new, modern fashion in the 1960s, but now you can find all types of clothes and accessories there."]},
+{s:"jon",a:"White City",ev:["My favourite place to go is Westfield, in White City."]},
+{s:"jon",a:"food halls",ev:["There are also four food halls with more than 80 different places to eat, including fast food and international restaurants."]},
+{s:"jon",a:"14-screen",ev:["After you finish shopping you can also see a film at the 14-screen cinema."]}
+];
+function sumBox(n){return '<div class="card sum"><b>'+SUMT+'</b>'+SUMP.map(function(p){return '<p>'+p.replace(/\{(\d+)\}/g,function(m,d){return d==n?'<b class="blank">('+d+') __________</b>':(res[d-1]!==undefined?'<b class="fill '+(res[d-1]?'ok':'no')+'">('+d+') '+Q[d-1].a+'</b>':'('+d+') __________')})+'</p>'}).join('')+'</div>'}
+var T=document.getElementById('text'),S=document.getElementById('side');
+var i=-1,res=[],ev=[],checked=false;
+function renderText(marks){
+ T.innerHTML=R.map(function(r){var x=r.x;
+  (marks||[]).forEach(function(m){x=x.replace(m,'\u0001'+m+'\u0002')});
+  x=x.replace(/\u0001/g,'<mark class="ev">').replace(/\u0002/g,'</mark>');
+  var tag=r.t;var id=(tag!=='p')?' id="s-'+r.id+'"':'';var cl=(tag==='p'&&r.id!=='art')?' class="c"':'';
+  return '<'+tag+id+cl+'>'+x+'</'+tag+'>'}).join('');
+}
+function go(id){if(id==='art'){T.scrollTo({top:0,behavior:'smooth'})}else{var el=document.getElementById('s-'+id);if(el)T.scrollTo({top:el.offsetTop-T.offsetTop-10,behavior:'smooth'})}
+ document.querySelectorAll('#nav [data-go]').forEach(function(b){b.classList.toggle('on',b.dataset.go===id)})}
+document.querySelectorAll('#nav [data-go]').forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+var sec=0,tmr=null;
+function fmt(){var m=Math.floor(sec/60),s=sec%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+function tick(){sec++;var e=document.getElementById('tm');if(e)e.textContent=fmt()}
+function sync(){var a=document.getElementById('tst'),b=document.getElementById('tpa');if(a)a.disabled=!!tmr;if(b)b.disabled=!tmr}
+function tStart(){if(!tmr)tmr=setInterval(tick,1000);sync()}
+function tPause(){clearInterval(tmr);tmr=null;sync()}
+function timerBox(){return '<div class="card tbox"><span id="tm">'+fmt()+'</span><button class="btn" id="tst">Start</button><button class="btn alt" id="tpa">Pause</button></div>'}
+function bindT(){document.getElementById('tst').onclick=tStart;document.getElementById('tpa').onclick=tPause;sync()}
+function partBox(k){return '<div class="card part"><b>Questions 1–10: Complete the summary below.</b><br>Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.</div>'}
+function dots(){return '<div class="dots">'+Q.map(function(_,k){return '<i class="'+(k===i?'cur ':'')+(res[k]===1?'ok':res[k]===0?'no':'')+'"></i>'}).join('')+'</div>'}
+function house(){return ''}
+function start(){
+ S.innerHTML=house()+'<div class="card part"><b>Questions 1–10: Complete the summary below.</b><br>Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.</div><button class="btn" id="go">Start</button>';
+ document.getElementById('go').onclick=function(){i=0;res=[];tPause();sec=0;show()};
+ renderText();go('art');
+}
+function show(){
+ checked=false;var q=Q[i];renderText();go(q.s);
+ S.innerHTML=timerBox()+partBox(i)+sumBox(i+1)+'<input type="text" id="ans" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type your answer…"><button class="btn" id="chk">Check</button><div id="out"></div>';
+ bindT();var sm=S.querySelector('.sum'),bl=S.querySelector('.blank');if(sm&&bl)sm.scrollTop=bl.offsetTop-20;var a=document.getElementById('ans');a.focus();
+ a.onkeydown=function(e){if(e.key==='Enter')check()};
+ document.getElementById('chk').onclick=check;
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function norm(s){return s.trim().replace(/\s+/g,' ').toLowerCase()}
+function check(){
+ if(checked)return;var a=document.getElementById('ans'),q=Q[i];
+ if(!a.value.trim()){a.focus();return}
+ checked=true;var ok=norm(a.value)===norm(q.a)||(q.alt||[]).map(norm).indexOf(norm(a.value))>-1;res[i]=ok?1:0;a.disabled=true;
+ 
+ document.getElementById('chk').style.display='none';
+ document.getElementById('out').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><b>'+(ok?'Correct!':'Wrong Answer')+'</b><br>Your answer: <b>'+esc(a.value.trim())+'</b><br>Answer: <b>'+q.a+(q.alt?' / '+q.alt[0]:'')+'</b></div><div class="row" style="margin-top:10px"><button class="btn alt" id="evb">Show Evidence</button><button class="btn" id="nx">'+(i<Q.length-1?'Next':'Selesai')+'</button></div>';
+ document.getElementById('evb').onclick=function(){renderText(Q[i].ev);var m=T.querySelector('mark.ev');if(m)T.scrollTo({top:m.offsetTop-T.offsetTop-80,behavior:'smooth'});this.disabled=true};
+ document.getElementById('nx').onclick=function(){if(i<Q.length-1){i++;show()}else end()};
+}
+function end(){
+ tPause();renderText();var n=res.filter(function(x){return x===1}).length;
+ S.innerHTML=house()+'<div class="card"><b style="font-size:20px">Score: '+n+' / '+Q.length+'</b><br>Time: '+fmt()+'<ol class="rev">'+Q.map(function(q,k){return '<li style="color:'+(res[k]?'#1d3f9c':'#c8102e')+'">'+q.a+'</li>'}).join('')+'</ol></div><button class="btn" id="again">Play again</button>';
+ document.getElementById('again').onclick=function(){i=0;res=[];tPause();sec=0;show()};
+}
+start();
+</script>
+</body>
+</html>
